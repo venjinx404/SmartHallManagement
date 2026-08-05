@@ -1,47 +1,40 @@
 package com.smarthall.model;
 
-public class User {
+public abstract class User {
+
     private String name;
     private String email;
-    private String phonenumber;
+    private String phone;
 
-    User(String name, String email , String phonenumber)
-    {
-    
-        this.name=name;
-        this.email=email;
-        this.phonenumber=phonenumber;
+    public User(String name, String email, String phone) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
     }
 
-    //getters
-    public String getname()
-    {
+    public String getName() {
         return name;
     }
 
-       public String getemail()
-    {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
         return email;
     }
-       public String getphonenumber()
-    {
-        return phonenumber;
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    //setters
-    public void setname(String name)
-    {
-        this.name=name;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setemail(String email)
-    {
-        this.email=email;
-    }
-    public void setphonenumber(String phonenumber)
-    {
-        this.phonenumber=phonenumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
+    public abstract void showDashboard();
 }
-
