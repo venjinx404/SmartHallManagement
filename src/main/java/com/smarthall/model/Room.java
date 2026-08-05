@@ -6,17 +6,21 @@ public class Room {
 
     private String roomNumber;
     private int floorNumber;
-    private int capacity;
+    private final int capacity;
     private ArrayList<Student> students;
 
-    public Room(String roomNumber, int floorNumber, int capacity) {
+    public Room(String roomNumber, int floorNumber) {
+
         this.roomNumber = roomNumber;
         this.floorNumber = floorNumber;
         this.capacity = 4;
         this.students = new ArrayList<>();
     }
 
+    // ==========================
     // Getters
+    // ==========================
+
     public String getRoomNumber() {
         return roomNumber;
     }
@@ -33,7 +37,10 @@ public class Room {
         return students;
     }
 
+    // ==========================
     // Setters
+    // ==========================
+
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
@@ -42,45 +49,47 @@ public class Room {
         this.floorNumber = floorNumber;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
+    // ==========================
+    // Business Methods
+    // ==========================
 
-    // Add Student
     public boolean addStudent(Student student) {
 
-        if (students.size() < capacity) {
+        if (!isFull()) {
+
             students.add(student);
             student.setRoomAssigned(true);
+
             return true;
         }
 
         return false;
     }
 
-    // Remove Student
     public boolean removeStudent(Student student) {
 
         if (students.remove(student)) {
+
             student.setRoomAssigned(false);
+
             return true;
         }
 
         return false;
     }
 
-    // Check Room Full
     public boolean isFull() {
+
         return students.size() >= capacity;
     }
 
-    // Vacant Seat
-    public int getAvailableSeat() {
+    public int getAvailableSeats() {
+
         return capacity - students.size();
     }
 
-    // Total Occupied
-    public int getOccupiedSeat() {
+    public int getOccupiedSeats() {
+
         return students.size();
     }
 }
