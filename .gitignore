@@ -47,3 +47,6 @@ Thumbs.db
 
 ### macOS ###
 .DS_Store
+
+# Ignore local manual test file
+src/test/java/com/smarthall/Test.java
