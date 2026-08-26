@@ -2,21 +2,16 @@ package com.smarthall.model;
 
 public class Admin extends User {
 
-   
     private String password;
-    
 
     public Admin(String name, String email, String phone,
-                  String password) {
+            String password) {
 
         super(name, email, phone);
 
-        
         this.password = password;
-        
+
     }
-
-
 
     public String getPassword() {
         return password;
@@ -25,8 +20,6 @@ public class Admin extends User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-   
 
     @Override
     public void showDashboard() {
