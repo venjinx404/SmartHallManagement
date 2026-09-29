@@ -1,17 +1,24 @@
 package com.smarthall.service;
 
 import com.smarthall.model.RoomApplication;
+import com.smarthall.repository.RoomApplicationRepository;
 
 public class RoomApplicationService {
 
-    // Create a new room application
+    private RoomApplicationRepository roomApplicationRepository;
+
+    public RoomApplicationService() {
+        roomApplicationRepository = new RoomApplicationRepository();
+    }
+
+    // Create and save a new room application
     public RoomApplication applyForRoom(String studentId,
-                                        String preferredRoomNumber,
-                                        String applicationDate) {
+            String preferredRoomNumber,
+            String applicationDate) {
 
         if (studentId == null ||
-            preferredRoomNumber == null ||
-            applicationDate == null) {
+                preferredRoomNumber == null ||
+                applicationDate == null) {
 
             return null;
         }
@@ -19,12 +26,16 @@ public class RoomApplicationService {
         RoomApplication application = new RoomApplication(
                 studentId,
                 preferredRoomNumber,
-                applicationDate
-        );
+                applicationDate);
+
+        boolean saved = roomApplicationRepository.saveApplication(application);
+
+        if (!saved) {
+            return null;
+        }
 
         return application;
     }
-
 
     // Approve a room application
     public boolean approveApplication(RoomApplication application) {
@@ -34,9 +45,9 @@ public class RoomApplicationService {
         }
 
         application.approve();
-        return true;
-    }
 
+        return roomApplicationRepository.updateStatus(application);
+    }
 
     // Reject a room application
     public boolean rejectApplication(RoomApplication application) {
@@ -46,6 +57,17 @@ public class RoomApplicationService {
         }
 
         application.reject();
-        return true;
+
+        return roomApplicationRepository.updateStatus(application);
+    }
+
+    public void viewPendingApplications() {
+
+        roomApplicationRepository.displayPendingApplications();
+    }
+
+    public boolean hasPendingApplications() {
+
+        return roomApplicationRepository.hasPendingApplications();
     }
 }

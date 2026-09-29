@@ -4,59 +4,175 @@ import com.smarthall.model.RoomApplication;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RoomApplicationRepository {
 
-    public boolean saveApplication(RoomApplication application) {
+        public boolean saveApplication(RoomApplication application) {
 
-        String sql =
-                "INSERT INTO room_applications " +
-                "(student_id, preferred_room_number, application_date, status) " +
-                "VALUES (?, ?, ?, ?)";
+                String sql = "INSERT INTO room_applications " +
+                                "(student_id, preferred_room_number, application_date, status) " +
+                                "VALUES (?, ?, ?, ?)";
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(
-                    1,
-                    application.getStudentId()
-            );
+                        statement.setString(
+                                        1,
+                                        application.getStudentId());
 
-            statement.setString(
-                    2,
-                    application.getPreferredRoomNumber()
-            );
+                        statement.setString(
+                                        2,
+                                        application.getPreferredRoomNumber());
 
-            statement.setString(
-                    3,
-                    application.getApplicationDate()
-            );
+                        statement.setString(
+                                        3,
+                                        application.getApplicationDate());
 
-            statement.setString(
-                    4,
-                    application.getStatus()
-            );
+                        statement.setString(
+                                        4,
+                                        application.getStatus());
 
-            statement.executeUpdate();
+                        statement.executeUpdate();
 
-            System.out.println(
-                    "Room application saved successfully!"
-            );
+                        System.out.println(
+                                        "Room application saved successfully!");
 
-            return true;
+                        return true;
 
-        } catch (SQLException e) {
+                } catch (SQLException e) {
 
-            System.out.println(
-                    "Failed to save room application!"
-            );
+                        System.out.println(
+                                        "Failed to save room application!");
 
-            e.printStackTrace();
+                        e.printStackTrace();
 
-            return false;
+                        return false;
+                }
         }
-    }
+
+        public boolean updateStatus(RoomApplication application) {
+
+                String sql = "UPDATE room_applications " +
+                                "SET status = ? " +
+                                "WHERE student_id = ? " +
+                                "AND preferred_room_number = ? " +
+                                "AND status = 'PENDING'";
+
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                        statement.setString(
+                                        1,
+                                        application.getStatus());
+
+                        statement.setString(
+                                        2,
+                                        application.getStudentId());
+
+                        statement.setString(
+                                        3,
+                                        application.getPreferredRoomNumber());
+
+                        int rowsUpdated = statement.executeUpdate();
+
+                        if (rowsUpdated > 0) {
+                                System.out.println(
+                                                "Room application status updated successfully!");
+                                return true;
+                        }
+
+                        return false;
+
+                } catch (SQLException e) {
+
+                        System.out.println(
+                                        "Failed to update room application status!");
+
+                        e.printStackTrace();
+
+                        return false;
+                }
+        }
+
+        public boolean hasPendingApplications() {
+
+                String sql = "SELECT COUNT(*) " +
+                                "FROM room_applications " +
+                                "WHERE status = 'PENDING'";
+
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                        ResultSet resultSet = statement.executeQuery();
+
+                        if (resultSet.next()) {
+                                return resultSet.getInt(1) > 0;
+                        }
+
+                } catch (SQLException e) {
+
+                        System.out.println(
+                                        "Failed to check pending applications!");
+
+                        e.printStackTrace();
+                }
+
+                return false;
+        }
+
+        public void displayPendingApplications() {
+
+                String sql = "SELECT student_id, preferred_room_number, " +
+                                "application_date, status " +
+                                "FROM room_applications " +
+                                "WHERE status = 'PENDING' " +
+                                "ORDER BY application_id";
+
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                        ResultSet resultSet = statement.executeQuery();
+
+                        System.out.println();
+                        System.out.println("===== Pending Room Applications =====");
+
+                        boolean found = false;
+
+                        while (resultSet.next()) {
+
+                                found = true;
+
+                                System.out.println();
+                                System.out.println(
+                                                "Student ID: "
+                                                                + resultSet.getString("student_id"));
+
+                                System.out.println(
+                                                "Preferred Room: "
+                                                                + resultSet.getString("preferred_room_number"));
+
+                                System.out.println(
+                                                "Application Date: "
+                                                                + resultSet.getString("application_date"));
+
+                                System.out.println(
+                                                "Status: "
+                                                                + resultSet.getString("status"));
+                        }
+
+                        if (!found) {
+                                System.out.println();
+                                System.out.println("No pending applications found.");
+                        }
+
+                } catch (SQLException e) {
+
+                        System.out.println(
+                                        "Failed to load pending applications!");
+
+                        e.printStackTrace();
+                }
+        }
 }

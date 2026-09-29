@@ -4,6 +4,7 @@ import com.smarthall.model.Notice;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class NoticeRepository {
@@ -49,4 +50,41 @@ public class NoticeRepository {
             return false;
         }
     }
+    public void displayAllNotices() {
+
+    String sql =
+            "SELECT notice_text, date " +
+            "FROM notices " +
+            "ORDER BY notice_id DESC";
+
+    try (Connection connection =
+                 DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        ResultSet resultSet =
+                statement.executeQuery();
+
+        System.out.println();
+        System.out.println("===== Notices =====");
+
+        while (resultSet.next()) {
+
+            String noticeText =
+                    resultSet.getString("notice_text");
+
+            String date =
+                    resultSet.getString("date");
+
+            System.out.println();
+            System.out.println("Notice: " + noticeText);
+            System.out.println("Date: " + date);
+        }
+
+    } catch (SQLException e) {
+
+        System.out.println("Failed to load notices!");
+        e.printStackTrace();
+    }
+}
 }
