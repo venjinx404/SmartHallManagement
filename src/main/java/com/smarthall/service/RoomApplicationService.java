@@ -2,13 +2,16 @@ package com.smarthall.service;
 
 import com.smarthall.model.RoomApplication;
 import com.smarthall.repository.RoomApplicationRepository;
+import com.smarthall.repository.StudentRepository;
 
 public class RoomApplicationService {
 
     private RoomApplicationRepository roomApplicationRepository;
+    private StudentRepository studentRepository;
 
     public RoomApplicationService() {
         roomApplicationRepository = new RoomApplicationRepository();
+        studentRepository = new StudentRepository();
     }
 
     // Create and save a new room application
@@ -40,14 +43,35 @@ public class RoomApplicationService {
     // Approve a room application
     public boolean approveApplication(RoomApplication application) {
 
-        if (application == null || !application.isPending()) {
-            return false;
-        }
+    if (application == null ||
+        !application.isPending()) {
 
-        application.approve();
-
-        return roomApplicationRepository.updateStatus(application);
+        return false;
     }
+
+    application.approve();
+
+    boolean statusUpdated =
+            roomApplicationRepository.updateStatus(
+                    application
+            );
+
+    if (!statusUpdated) {
+        return false;
+    }
+
+    boolean roomAssigned =
+            studentRepository.assignRoom(
+                    application.getStudentId(),
+                    application.getPreferredRoomNumber()
+            );
+
+    if (!roomAssigned) {
+        return false;
+    }
+
+    return true;
+}
 
     // Reject a room application
     public boolean rejectApplication(RoomApplication application) {

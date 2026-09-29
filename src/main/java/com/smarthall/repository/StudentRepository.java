@@ -39,4 +39,51 @@ public class StudentRepository {
             return false;
         }
     }
+ public boolean assignRoom(String studentId,
+                          String roomNumber) {
+
+    String sql =
+            "UPDATE students " +
+            "SET room_assigned = TRUE, " +
+            "room_number = ? " +
+            "WHERE student_id = ? " +
+            "AND room_assigned = FALSE";
+
+    try (Connection connection =
+                 DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        statement.setString(1, roomNumber);
+        statement.setString(2, studentId);
+
+        int rowsUpdated =
+                statement.executeUpdate();
+
+        if (rowsUpdated > 0) {
+
+            System.out.println(
+                    "Room assigned to student successfully!"
+            );
+
+            return true;
+        }
+
+        System.out.println(
+                "Student already has a room or student was not found!"
+        );
+
+        return false;
+
+    } catch (SQLException e) {
+
+        System.out.println(
+                "Failed to assign room to student!"
+        );
+
+        e.printStackTrace();
+
+        return false;
+    }
+}
 }
