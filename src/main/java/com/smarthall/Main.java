@@ -460,7 +460,7 @@ public class Main {
 
                 case 3:
                     System.out.println();
-                    System.out.println("fAIRWELL FROM BIJOY 24 HALL!");
+                    System.out.println("FAIRWELL FROM BIJOY 24 HALL!");
                     running = false;
                     break;
 
