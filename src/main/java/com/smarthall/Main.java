@@ -177,54 +177,72 @@ public class Main {
                                 System.out.print("Amount: ");
                                 double amount = scanner.nextDouble();
 
-                                Payment payment = paymentService.createPayment(
-                                        paymentStudentId,
-                                        semester,
-                                        amount);
+                                try {
 
-                                if (payment != null) {
+                                    Payment payment = paymentService.createPayment(
+                                            paymentStudentId,
+                                            semester,
+                                            amount);
 
-                                    System.out.println();
-                                    System.out.println("Payment created successfully!");
-                                    System.out.println(
-                                            "Student ID: " + payment.getStudentId());
-                                    System.out.println(
-                                            "Semester: " + payment.getSemester());
-                                    System.out.println(
-                                            "Amount: " + payment.getAmount() + " Taka");
-                                    System.out.println(
-                                            "Status: " + payment.getStatus());
+                                    if (payment != null) {
 
-                                    System.out.print(
-                                            "Do you want to make payment now? (yes/no): ");
+                                        System.out.println();
+                                        System.out.println("Payment created successfully!");
+                                        System.out.println(
+                                                "Student ID: " + payment.getStudentId());
+                                        System.out.println(
+                                                "Semester: " + payment.getSemester());
+                                        System.out.println(
+                                                "Amount: " + payment.getAmount() + " Taka");
+                                        System.out.println(
+                                                "Status: " + payment.getStatus());
 
-                                    scanner.nextLine();
-                                    String paymentChoice = scanner.nextLine();
+                                        System.out.print(
+                                                "Do you want to make payment now? (yes/no): ");
 
-                                    if (paymentChoice.equalsIgnoreCase("yes")) {
+                                        scanner.nextLine();
+                                        String paymentChoice = scanner.nextLine();
 
-                                        boolean paid = paymentService.makePayment(payment);
+                                        if (paymentChoice.equalsIgnoreCase("yes")) {
 
-                                        if (paid) {
-                                            System.out.println();
-                                            System.out.println("Payment completed successfully!");
-                                            System.out.println(
-                                                    "Payment status: " + payment.getStatus());
+                                            boolean paid = paymentService.makePayment(payment);
+
+                                            if (paid) {
+
+                                                System.out.println();
+                                                System.out.println(
+                                                        "Payment completed successfully!");
+
+                                                System.out.println(
+                                                        "Payment status: "
+                                                                + payment.getStatus());
+
+                                            } else {
+
+                                                System.out.println();
+                                                System.out.println(
+                                                        "Payment failed!");
+                                            }
+
                                         } else {
+
                                             System.out.println();
-                                            System.out.println("Payment failed!");
+                                            System.out.println(
+                                                    "Payment remains DUE.");
                                         }
 
                                     } else {
 
                                         System.out.println();
-                                        System.out.println("Payment remains DUE.");
+                                        System.out.println(
+                                                "Payment creation failed!");
                                     }
 
-                                } else {
+                                } catch (StudentNotRegisteredException e) {
 
                                     System.out.println();
-                                    System.out.println("Payment creation failed!");
+                                    System.out.println(
+                                            "Invalid payment, unregistered student!");
                                 }
 
                                 break;
@@ -245,26 +263,43 @@ public class Main {
                                 System.out.print("Problem: ");
                                 String problem = scanner.nextLine();
 
-                                Complaint complaint = complaintService.submitComplaint(
-                                        complaintStudentId,
-                                        complaintRoomNumber,
-                                        problem);
+                                try {
 
-                                if (complaint != null) {
+                                    Complaint complaint = complaintService.submitComplaint(
+                                            complaintStudentId,
+                                            complaintRoomNumber,
+                                            problem);
+
+                                    if (complaint != null) {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "Complaint submitted successfully!");
+
+                                        System.out.println(
+                                                "Student ID: "
+                                                        + complaint.getStudentId());
+
+                                        System.out.println(
+                                                "Room Number: "
+                                                        + complaint.getRoomNumber());
+
+                                        System.out.println(
+                                                "Problem: "
+                                                        + complaint.getProblem());
+
+                                    } else {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "Complaint submission failed!");
+                                    }
+
+                                } catch (StudentNotRegisteredException e) {
 
                                     System.out.println();
-                                    System.out.println("Complaint submitted successfully!");
                                     System.out.println(
-                                            "Student ID: " + complaint.getStudentId());
-                                    System.out.println(
-                                            "Room Number: " + complaint.getRoomNumber());
-                                    System.out.println(
-                                            "Problem: " + complaint.getProblem());
-
-                                } else {
-
-                                    System.out.println();
-                                    System.out.println("Complaint submission failed!");
+                                            "Invalid complaint, unregistered student!");
                                 }
 
                                 break;

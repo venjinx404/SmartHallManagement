@@ -1,36 +1,44 @@
 package com.smarthall.service;
 
+import com.smarthall.exception.StudentNotRegisteredException;
 import com.smarthall.model.Payment;
 import com.smarthall.repository.PaymentRepository;
+import com.smarthall.repository.StudentRepository;
 
 public class PaymentService {
 
     private PaymentRepository paymentRepository;
+    private StudentRepository studentRepository;
 
     public PaymentService() {
         paymentRepository = new PaymentRepository();
+        studentRepository = new StudentRepository();
     }
 
     // Create and save a new payment
     public Payment createPayment(String studentId,
-                                 int semester,
-                                 double amount) {
+            int semester,
+            double amount) {
 
         if (studentId == null ||
-            semester <= 0 ||
-            amount <= 0) {
+                semester <= 0 ||
+                amount <= 0) {
 
             return null;
+        }
+
+        if (!studentRepository.existsByStudentId(studentId)) {
+
+            throw new StudentNotRegisteredException(
+                    "Invalid payment, unregistered student!");
         }
 
         Payment payment = new Payment(
                 studentId,
                 semester,
-                amount
-        );
+                amount);
 
-        boolean saved =
-                paymentRepository.savePayment(payment);
+        boolean saved = paymentRepository.savePayment(payment);
 
         if (!saved) {
             return null;

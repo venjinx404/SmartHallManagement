@@ -1,14 +1,18 @@
 package com.smarthall.service;
 
+import com.smarthall.exception.StudentNotRegisteredException;
 import com.smarthall.model.Complaint;
 import com.smarthall.repository.ComplaintRepository;
+import com.smarthall.repository.StudentRepository;
 
 public class ComplaintService {
 
     private ComplaintRepository complaintRepository;
+    private StudentRepository studentRepository;
 
     public ComplaintService() {
         complaintRepository = new ComplaintRepository();
+        studentRepository=new StudentRepository();
     }
 
     // Create and save a new complaint
@@ -21,6 +25,12 @@ public class ComplaintService {
             problem == null) {
 
             return null;
+        }
+         if (!studentRepository.existsByStudentId(studentId)) {
+
+            throw new StudentNotRegisteredException(
+                    "Invalid complaint, unregistered student!"
+            );
         }
 
         Complaint complaint = new Complaint(
