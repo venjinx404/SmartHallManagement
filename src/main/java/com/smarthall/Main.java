@@ -1,6 +1,7 @@
 package com.smarthall;
 
 import com.smarthall.service.NoticeService;
+import com.smarthall.exception.StudentNotRegisteredException;
 import com.smarthall.model.Complaint;
 import com.smarthall.service.ComplaintService;
 import com.smarthall.model.Payment;
@@ -129,32 +130,35 @@ public class Main {
                                 System.out.print("Application Date (YYYY-MM-DD): ");
                                 String applicationDate = scanner.nextLine();
 
-                                RoomApplication application = roomApplicationService.applyForRoom(
-                                        applicationStudentId,
-                                        preferredRoomNumber,
-                                        applicationDate);
+                                try {
 
-                                if (application != null) {
+                                    RoomApplication application = roomApplicationService.applyForRoom(
+                                            applicationStudentId,
+                                            preferredRoomNumber,
+                                            applicationDate);
+
+                                    if (application != null) {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "Room application successful!");
+
+                                    } else {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "Room application failed!");
+                                    }
+
+                                } catch (StudentNotRegisteredException e) {
 
                                     System.out.println();
-                                    System.out.println("Room application successful!");
                                     System.out.println(
-                                            "Student ID: " + application.getStudentId());
-                                    System.out.println(
-                                            "Preferred Room: "
-                                                    + application.getPreferredRoomNumber());
-                                    System.out.println(
-                                            "Application Date: "
-                                                    + application.getApplicationDate());
-                                    System.out.println(
-                                            "Status: " + application.getStatus());
+                                            "Room application failed!");
 
-                                } else {
-
-                                    System.out.println();
-                                    System.out.println("Room application failed!");
+                                    System.out.println(
+                                            "Reason: " + e.getMessage());
                                 }
-
                                 break;
 
                             case 3:
