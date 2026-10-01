@@ -96,4 +96,17 @@ public class RoomApplicationService {
 
         return roomApplicationRepository.hasPendingApplications();
     }
+    public RoomApplication searchApplication(String studentId) {
+
+    if (!studentRepository.existsByStudentId(studentId)) {
+
+        throw new StudentNotRegisteredException(
+                "Student is not registered!"
+        );
+    }
+
+    return roomApplicationRepository.findByStudentId(
+            studentId
+    );
+}
 }

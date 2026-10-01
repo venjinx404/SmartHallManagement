@@ -175,4 +175,54 @@ public class RoomApplicationRepository {
                         e.printStackTrace();
                 }
         }
+
+        public RoomApplication findByStudentId(String studentId) {
+
+                String sql = "SELECT student_id, preferred_room_number, " +
+                                "application_date, status " +
+                                "FROM room_applications " +
+                                "WHERE student_id = ? " +
+                                "ORDER BY application_id DESC " +
+                                "LIMIT 1";
+
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                        statement.setString(
+                                        1,
+                                        studentId);
+
+                        ResultSet resultSet = statement.executeQuery();
+
+                        if (resultSet.next()) {
+
+                                RoomApplication application = new RoomApplication(
+                                                resultSet.getString("student_id"),
+                                                resultSet.getString("preferred_room_number"),
+                                                resultSet.getString("application_date"));
+
+                                String status = resultSet.getString("status");
+
+                                if ("APPROVED".equals(status)) {
+
+                                        application.approve();
+
+                                } else if ("REJECTED".equals(status)) {
+
+                                        application.reject();
+                                }
+
+                                return application;
+                        }
+
+                } catch (SQLException e) {
+
+                        System.out.println(
+                                        "Failed to search room application!");
+
+                        e.printStackTrace();
+                }
+
+                return null;
+        }
 }

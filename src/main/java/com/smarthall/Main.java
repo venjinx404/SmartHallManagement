@@ -60,7 +60,8 @@ public class Main {
                         System.out.println("3. Make Payment");
                         System.out.println("4. Submit Complaint");
                         System.out.println("5. View Notice");
-                        System.out.println("6. Exit");
+                        System.out.println("6. Application Details");
+                        System.out.println("7. Exit");
                         System.out.print("Enter your choice: ");
 
                         int studentChoice = scanner.nextInt();
@@ -313,9 +314,57 @@ public class Main {
                                 break;
 
                             case 6:
+                                scanner.nextLine();
+
+                                System.out.println();
+                                System.out.println("===== Application Details=====");
+
+                                System.out.print("Enter Student ID: ");
+                                String searchStudentId = scanner.nextLine();
+
+                                try {
+
+                                    RoomApplication application = roomApplicationService.searchApplication(
+                                            searchStudentId);
+
+                                    if (application != null) {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "===== Room Application Details =====");
+
+                                        System.out.println(
+                                                "Student ID: "
+                                                        + application.getStudentId());
+
+                                        System.out.println(
+                                                "Preferred Room: "
+                                                        + application.getPreferredRoomNumber());
+
+                                        System.out.println(
+                                                "Application Date: "
+                                                        + application.getApplicationDate());
+
+                                        System.out.println(
+                                                "Status: "
+                                                        + application.getStatus());
+
+                                    } else {
+
+                                        System.out.println();
+                                        System.out.println(
+                                                "No room application found!");
+                                    }
+
+                                } catch (StudentNotRegisteredException e) {
+
+                                    System.out.println();
+                                    System.out.println(
+                                            "Student is not registered!");
+                                }
+                            case 7:
                                 studentRunning = false;
                                 break;
-
                             default:
                                 System.out.println();
                                 System.out.println("Invalid choice!");
