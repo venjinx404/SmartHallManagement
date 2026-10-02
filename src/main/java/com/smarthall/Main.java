@@ -379,175 +379,192 @@ public class Main {
 
                     scanner.nextLine();
 
-                    System.out.println();
-                    System.out.println("===== Admin Login =====");
+                    boolean adminLoggedIn = false;
 
-                    System.out.print("Email: ");
-                    String adminEmail = scanner.nextLine();
+                    while (!adminLoggedIn) {
 
-                    System.out.print("Password: ");
-                    String adminPassword = scanner.nextLine();
+                        System.out.println();
+                        System.out.println("===== Admin Login =====");
 
-                    try {
+                        System.out.print("Email: ");
+                        String adminEmail = scanner.nextLine();
 
-                        boolean adminLoggedIn = adminRepository.login(
-                                adminEmail,
-                                adminPassword);
+                        System.out.print("Password: ");
+                        String adminPassword = scanner.nextLine();
 
-                        if (adminLoggedIn) {
+                        try {
 
-                            System.out.println();
-                            System.out.println("Admin login successful!");
+                            adminLoggedIn = adminRepository.login(
+                                    adminEmail,
+                                    adminPassword);
 
-                            boolean adminRunning = true;
-
-                            while (adminRunning) {
+                            if (adminLoggedIn) {
 
                                 System.out.println();
-                                System.out.println("===== Admin Dashboard =====");
-                                System.out.println("1. Approve Room Application");
-                                System.out.println("2. Post Notice");
-                                System.out.println("3. Exit");
-                                System.out.print("Enter your choice: ");
+                                System.out.println("Admin login successful!");
 
-                                int adminChoice = scanner.nextInt();
+                                boolean adminRunning = true;
 
-                                switch (adminChoice) {
+                                while (adminRunning) {
 
-                                    case 1:
+                                    System.out.println();
+                                    System.out.println("===== Admin Dashboard =====");
+                                    System.out.println("1. Approve Room Application");
+                                    System.out.println("2. Post Notice");
+                                    System.out.println("3. Exit");
+                                    System.out.print("Enter your choice: ");
 
-                                        scanner.nextLine();
+                                    int adminChoice = scanner.nextInt();
 
-                                        System.out.println();
-                                        System.out.println("===== Pending Room Applications =====");
+                                    switch (adminChoice) {
 
-                                        if (!roomApplicationService.hasPendingApplications()) {
+                                        case 1:
+
+                                            scanner.nextLine();
 
                                             System.out.println();
                                             System.out.println(
-                                                    "No pending room applications found.");
+                                                    "===== Pending Room Applications =====");
 
-                                            System.out.println(
-                                                    "Returning to Admin Dashboard...");
+                                            if (!roomApplicationService.hasPendingApplications()) {
+
+                                                System.out.println();
+                                                System.out.println(
+                                                        "No pending room applications found.");
+
+                                                System.out.println(
+                                                        "Returning to Admin Dashboard...");
+
+                                                break;
+                                            }
+
+                                            roomApplicationService.viewPendingApplications();
+
+                                            System.out.println();
+                                            System.out.print("Student ID: ");
+                                            String actionStudentId = scanner.nextLine();
+
+                                            System.out.print("Preferred Room Number: ");
+                                            String actionRoomNumber = scanner.nextLine();
+
+                                            System.out.println();
+                                            System.out.println("1. Approve");
+                                            System.out.println("2. Reject");
+                                            System.out.print("Enter your choice: ");
+
+                                            int actionChoice = scanner.nextInt();
+
+                                            RoomApplication application = new RoomApplication(
+                                                    actionStudentId,
+                                                    actionRoomNumber,
+                                                    "");
+
+                                            if (actionChoice == 1) {
+
+                                                boolean approved = roomApplicationService
+                                                        .approveApplication(application);
+
+                                                if (approved) {
+
+                                                    System.out.println();
+                                                    System.out.println(
+                                                            "Room application approved successfully!");
+
+                                                } else {
+
+                                                    System.out.println();
+                                                    System.out.println(
+                                                            "Room application approval failed!");
+                                                }
+
+                                            } else if (actionChoice == 2) {
+
+                                                boolean rejected = roomApplicationService
+                                                        .rejectApplication(application);
+
+                                                if (rejected) {
+
+                                                    System.out.println();
+                                                    System.out.println(
+                                                            "Room application rejected successfully!");
+
+                                                } else {
+
+                                                    System.out.println();
+                                                    System.out.println(
+                                                            "Room application rejection failed!");
+                                                }
+
+                                            } else {
+
+                                                System.out.println();
+                                                System.out.println("Invalid choice!");
+                                            }
 
                                             break;
-                                        }
 
-                                        roomApplicationService.viewPendingApplications();
+                                        case 2:
 
-                                        System.out.println();
-                                        System.out.print("Student ID: ");
-                                        String actionStudentId = scanner.nextLine();
+                                            scanner.nextLine();
 
-                                        System.out.print("Preferred Room Number: ");
-                                        String actionRoomNumber = scanner.nextLine();
+                                            System.out.println();
+                                            System.out.println("===== Post Notice =====");
 
-                                        System.out.println();
-                                        System.out.println("1. Approve");
-                                        System.out.println("2. Reject");
-                                        System.out.print("Enter your choice: ");
+                                            System.out.print("Notice: ");
+                                            String noticeText = scanner.nextLine();
 
-                                        int actionChoice = scanner.nextInt();
+                                            System.out.print("Date (YYYY-MM-DD): ");
+                                            String noticeDate = scanner.nextLine();
 
-                                        RoomApplication application = new RoomApplication(
-                                                actionStudentId,
-                                                actionRoomNumber,
-                                                "");
+                                            Notice notice = noticeService.createNotice(
+                                                    noticeText,
+                                                    noticeDate);
 
-                                        if (actionChoice == 1) {
-
-                                            boolean approved = roomApplicationService.approveApplication(
-                                                    application);
-
-                                            if (approved) {
+                                            if (notice != null) {
 
                                                 System.out.println();
                                                 System.out.println(
-                                                        "Room application approved successfully!");
+                                                        "Notice posted successfully!");
+
+                                                System.out.println(
+                                                        "Notice: "
+                                                                + notice.getNoticeText());
+
+                                                System.out.println(
+                                                        "Date: "
+                                                                + notice.getDate());
 
                                             } else {
 
                                                 System.out.println();
                                                 System.out.println(
-                                                        "Room application approval failed!");
+                                                        "Notice posting failed!");
                                             }
 
-                                        } else if (actionChoice == 2) {
+                                            break;
 
-                                            boolean rejected = roomApplicationService.rejectApplication(
-                                                    application);
+                                        case 3:
 
-                                            if (rejected) {
+                                            adminRunning = false;
+                                            break;
 
-                                                System.out.println();
-                                                System.out.println(
-                                                        "Room application rejected successfully!");
-
-                                            } else {
-
-                                                System.out.println();
-                                                System.out.println(
-                                                        "Room application rejection failed!");
-                                            }
-
-                                        } else {
+                                        default:
 
                                             System.out.println();
                                             System.out.println("Invalid choice!");
-                                        }
-
-                                        break;
-
-                                    case 2:
-
-                                        scanner.nextLine();
-
-                                        System.out.println();
-                                        System.out.println("===== Post Notice =====");
-
-                                        System.out.print("Notice: ");
-                                        String noticeText = scanner.nextLine();
-
-                                        System.out.print("Date (YYYY-MM-DD): ");
-                                        String noticeDate = scanner.nextLine();
-
-                                        Notice notice = noticeService.createNotice(
-                                                noticeText,
-                                                noticeDate);
-
-                                        if (notice != null) {
-
-                                            System.out.println();
-                                            System.out.println("Notice posted successfully!");
-                                            System.out.println(
-                                                    "Notice: " + notice.getNoticeText());
-                                            System.out.println(
-                                                    "Date: " + notice.getDate());
-
-                                        } else {
-
-                                            System.out.println();
-                                            System.out.println("Notice posting failed!");
-                                        }
-
-                                        break;
-
-                                    case 3:
-                                        adminRunning = false;
-                                        break;
-
-                                    default:
-                                        System.out.println();
-                                        System.out.println("Invalid choice!");
+                                    }
                                 }
                             }
 
+                        } catch (AdminLoginException e) {
+
+                            System.out.println();
+                            System.out.println(e.getMessage());
+
+                            System.out.println();
+                            System.out.println(
+                                    "Please try logging in again.");
                         }
-
-                    } catch (AdminLoginException e) {
-
-                        System.out.println();
-                        System.out.println(e.getMessage());
                     }
 
                     break;
