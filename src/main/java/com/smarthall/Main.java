@@ -413,7 +413,8 @@ public class Main {
                                     System.out.println("===== Admin Dashboard =====");
                                     System.out.println("1. Approve Room Application");
                                     System.out.println("2. Post Notice");
-                                    System.out.println("3. Exit");
+                                    System.out.println("3. View Complaints");
+                                    System.out.println("4. Exit");
                                     System.out.print("Enter your choice: ");
 
                                     int adminChoice = scanner.nextInt();
@@ -547,8 +548,11 @@ public class Main {
 
                                         case 3:
 
+                                            // Consume leftover Enter from nextInt()
+                                            scanner.nextLine();
+
                                             System.out.println();
-                                            System.out.println("===== Unsolved Complaints =====");
+                                            System.out.println("===== Complaints =====");
 
                                             ArrayList<Complaint> complaints = complaintService.getUnsolvedComplaints();
 
@@ -579,10 +583,12 @@ public class Main {
                                                 }
 
                                                 System.out.println();
+
                                                 System.out.print(
                                                         "Enter Room Number to mark as solved "
                                                                 + "(0 to return): ");
 
+                                                // Take Room Number
                                                 String roomNumber = scanner.nextLine();
 
                                                 if (!roomNumber.equals("0")) {
@@ -607,13 +613,12 @@ public class Main {
                                             }
 
                                             break;
-
                                         case 4:
 
                                             System.out.println();
                                             System.out.println("Admin logged out.");
 
-                                            adminLoggedIn = false;
+                                            adminRunning = false;
 
                                             break;
 
