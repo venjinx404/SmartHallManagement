@@ -15,6 +15,8 @@ import com.smarthall.service.StudentService;
 import com.smarthall.repository.AdminRepository;
 import com.smarthall.model.Notice;
 import com.smarthall.exception.AdminLoginException;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -545,7 +547,74 @@ public class Main {
 
                                         case 3:
 
-                                            adminRunning = false;
+                                            System.out.println();
+                                            System.out.println("===== Unsolved Complaints =====");
+
+                                            ArrayList<Complaint> complaints = complaintService.getUnsolvedComplaints();
+
+                                            if (complaints.isEmpty()) {
+
+                                                System.out.println("No Unsolved problem");
+
+                                            } else {
+
+                                                for (Complaint complaint : complaints) {
+
+                                                    System.out.println();
+                                                    System.out.println(
+                                                            "Student ID: "
+                                                                    + complaint.getStudentId());
+
+                                                    System.out.println(
+                                                            "Room Number: "
+                                                                    + complaint.getRoomNumber());
+
+                                                    System.out.println(
+                                                            "Problem: "
+                                                                    + complaint.getProblem());
+
+                                                    System.out.println(
+                                                            "Status: "
+                                                                    + complaint.getStatus());
+                                                }
+
+                                                System.out.println();
+                                                System.out.print(
+                                                        "Enter Room Number to mark as solved "
+                                                                + "(0 to return): ");
+
+                                                String roomNumber = scanner.nextLine();
+
+                                                if (!roomNumber.equals("0")) {
+
+                                                    boolean solved = complaintService.markComplaintAsSolved(
+                                                            roomNumber);
+
+                                                    if (solved) {
+
+                                                        System.out.println();
+                                                        System.out.println(
+                                                                "Complaint solved successfully!");
+
+                                                    } else {
+
+                                                        System.out.println();
+                                                        System.out.println(
+                                                                "No unsolved complaint found "
+                                                                        + "for this room.");
+                                                    }
+                                                }
+                                            }
+
+                                            break;
+
+                                        case 4:
+
+                                            System.out.println();
+                                            System.out.println("Admin logged out.");
+
+                                            adminLoggedIn = false;
+
                                             break;
 
                                         default:
