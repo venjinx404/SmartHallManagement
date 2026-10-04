@@ -105,4 +105,31 @@ public class StudentRepository {
                         return false;
                 }
         }
+
+        public int getOccupiedSeats(String roomNumber) {
+
+                String sql = "SELECT COUNT(*) " +
+                                "FROM students " +
+                                "WHERE room_number = ? " +
+                                "AND room_assigned = TRUE";
+
+                try (Connection connection = DatabaseConnection.getConnection();
+                                PreparedStatement statement = connection.prepareStatement(sql)) {
+
+                        statement.setString(1, roomNumber);
+
+                        ResultSet resultSet = statement.executeQuery();
+
+                        if (resultSet.next()) {
+                                return resultSet.getInt(1);
+                        }
+
+                } catch (SQLException e) {
+
+                        System.out.println("Failed to check room capacity!");
+                        e.printStackTrace();
+                }
+
+                return 0;
+        }
 }

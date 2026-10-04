@@ -15,7 +15,7 @@ public class RoomApplicationService {
         studentRepository = new StudentRepository();
     }
 
-    // Create and save a new room application
+    // CREATE AND SAVE NEW ROOM FOR STUDENTS
     public RoomApplication applyForRoom(String studentId,
             String preferredRoomNumber,
             String applicationDate) {
@@ -46,7 +46,7 @@ public class RoomApplicationService {
         return application;
     }
 
-    // Approve a room application
+    // APPLY FOR ROOM
     public boolean approveApplication(RoomApplication application) {
 
         if (application == null ||
@@ -55,6 +55,29 @@ public class RoomApplicationService {
             return false;
         }
 
+        // ROOM CAPACITY CHECK
+        int occupiedSeats = studentRepository.getOccupiedSeats(
+                application.getPreferredRoomNumber());
+
+        // IF ROOM FULL
+        if (occupiedSeats >= 4) {
+
+            boolean updated = roomApplicationRepository.markAsFullRoom(
+                    application);
+
+            if (updated) {
+
+                application.fullRoom();
+
+                System.out.println();
+                System.out.println(
+                        "Room is full! Application declined.");
+            }
+
+            return false;
+        }
+
+        // Room has vacancy
         application.approve();
 
         boolean statusUpdated = roomApplicationRepository.updateStatus(
@@ -96,17 +119,16 @@ public class RoomApplicationService {
 
         return roomApplicationRepository.hasPendingApplications();
     }
+
     public RoomApplication searchApplication(String studentId) {
 
-    if (!studentRepository.existsByStudentId(studentId)) {
+        if (!studentRepository.existsByStudentId(studentId)) {
 
-        throw new StudentNotRegisteredException(
-                "Student is not registered!"
-        );
+            throw new StudentNotRegisteredException(
+                    "Student is not registered!");
+        }
+
+        return roomApplicationRepository.findByStudentId(
+                studentId);
     }
-
-    return roomApplicationRepository.findByStudentId(
-            studentId
-    );
-}
 }

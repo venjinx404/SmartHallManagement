@@ -5,17 +5,19 @@ import com.smarthall.model.Payment;
 import com.smarthall.repository.PaymentRepository;
 import com.smarthall.repository.StudentRepository;
 
+
 public class PaymentService {
 
     private PaymentRepository paymentRepository;
     private StudentRepository studentRepository;
 
     public PaymentService() {
+
         paymentRepository = new PaymentRepository();
         studentRepository = new StudentRepository();
     }
 
-    // Create and save a new payment
+    // CREATE NEW PAYMENT
     public Payment createPayment(String studentId,
             int semester,
             double amount) {
@@ -50,11 +52,21 @@ public class PaymentService {
     // Make payment
     public boolean makePayment(Payment payment) {
 
-        if (payment == null || !payment.isDue()) {
+        if (payment == null ||
+                !payment.isDue()) {
+
             return false;
         }
 
+        // PAYMENT STATUS CHANGE
         payment.makePayment();
+
+        boolean updated = paymentRepository.updateStatus(payment);
+
+        if (!updated) {
+
+            return false;
+        }
 
         return true;
     }

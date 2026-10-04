@@ -14,6 +14,17 @@ public class RoomApplication {
         this.status = "PENDING";
     }
 
+    public RoomApplication(String studentId,
+            String preferredRoomNumber,
+            String applicationDate,
+            String status) {
+
+        this.studentId = studentId;
+        this.preferredRoomNumber = preferredRoomNumber;
+        this.applicationDate = applicationDate;
+        this.status = status;
+    }
+
     public String getStudentId() {
         return studentId;
     }
@@ -48,6 +59,10 @@ public class RoomApplication {
 
     public void reject() {
         status = "REJECTED";
+    }
+
+    public void fullRoom() {
+        status = "FULL ROOM";
     }
 
     public boolean isPending() {

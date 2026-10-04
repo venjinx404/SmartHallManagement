@@ -176,53 +176,70 @@ public class RoomApplicationRepository {
                 }
         }
 
-        public RoomApplication findByStudentId(String studentId) {
+       public RoomApplication findByStudentId(String studentId) {
 
-                String sql = "SELECT student_id, preferred_room_number, " +
-                                "application_date, status " +
-                                "FROM room_applications " +
+    String sql =
+            "SELECT student_id, preferred_room_number, " +
+            "application_date, status " +
+            "FROM room_applications " +
+            "WHERE student_id = ? " +
+            "ORDER BY application_id DESC " +
+            "LIMIT 1";
+
+    try (Connection connection =
+                 DatabaseConnection.getConnection();
+         PreparedStatement statement =
+                 connection.prepareStatement(sql)) {
+
+        statement.setString(1, studentId);
+
+        ResultSet resultSet =
+                statement.executeQuery();
+
+        if (resultSet.next()) {
+
+            return new RoomApplication(
+                    resultSet.getString("student_id"),
+                    resultSet.getString("preferred_room_number"),
+                    resultSet.getString("application_date"),
+                    resultSet.getString("status")
+            );
+        }
+
+    } catch (SQLException e) {
+
+        System.out.println(
+                "Failed to find room application!"
+        );
+        e.printStackTrace();
+    }
+
+    return null;
+}
+
+        public boolean markAsFullRoom(RoomApplication application) {
+
+                String sql = "UPDATE room_applications " +
+                                "SET status = 'FULL ROOM' " +
                                 "WHERE student_id = ? " +
-                                "ORDER BY application_id DESC " +
-                                "LIMIT 1";
+                                "AND preferred_room_number = ? " +
+                                "AND status = 'PENDING'";
 
                 try (Connection connection = DatabaseConnection.getConnection();
                                 PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                        statement.setString(
-                                        1,
-                                        studentId);
+                        statement.setString(1, application.getStudentId());
+                        statement.setString(2, application.getPreferredRoomNumber());
 
-                        ResultSet resultSet = statement.executeQuery();
+                        int rowsUpdated = statement.executeUpdate();
 
-                        if (resultSet.next()) {
-
-                                RoomApplication application = new RoomApplication(
-                                                resultSet.getString("student_id"),
-                                                resultSet.getString("preferred_room_number"),
-                                                resultSet.getString("application_date"));
-
-                                String status = resultSet.getString("status");
-
-                                if ("APPROVED".equals(status)) {
-
-                                        application.approve();
-
-                                } else if ("REJECTED".equals(status)) {
-
-                                        application.reject();
-                                }
-
-                                return application;
-                        }
+                        return rowsUpdated > 0;
 
                 } catch (SQLException e) {
 
-                        System.out.println(
-                                        "Failed to search room application!");
-
+                        System.out.println("Failed to update application status!");
                         e.printStackTrace();
+                        return false;
                 }
-
-                return null;
         }
 }
