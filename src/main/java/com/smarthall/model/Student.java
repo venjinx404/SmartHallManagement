@@ -52,7 +52,7 @@ public class Student extends User {
 
     @Override
     public void showDashboard() {
-        System.out.println("\n===== Student Dashboard =====");
-        System.out.println("Welcome, " + getName());
+        System.out.println("\n===== Welcome Student");
+        
     }
 }

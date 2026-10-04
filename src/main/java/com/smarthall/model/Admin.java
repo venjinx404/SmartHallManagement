@@ -23,7 +23,7 @@ public class Admin extends User {
 
     @Override
     public void showDashboard() {
-        System.out.println("\n===== Admin Dashboard =====");
-        System.out.println("Welcome, " + getName());
+        System.out.println("\n===== welcome Admin");
+
     }
 }

@@ -97,6 +97,7 @@ public class StudentMenu {
                         System.out.println(
                                 "Student ID: "
                                         + student.getStudentId());
+                                        student.showDashboard();
 
                     } else {
 
