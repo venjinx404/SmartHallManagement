@@ -10,12 +10,15 @@ public class DatabaseConnection {
 
     private static final String USER = "root";
 
-    private static final String PASSWORD = "Mubin456";
+    private static final String PASSWORD = System.getenv("SMARTHALL_DB_PASSWORD");
 
     public static Connection getConnection() {
 
         try {
-            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection connection = DriverManager.getConnection(
+                    URL,
+                    USER,
+                    PASSWORD);
 
             return connection;
 
